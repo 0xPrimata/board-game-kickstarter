@@ -1,0 +1,31 @@
+
+#Duration and multiplier
+#SELECT id, goal, pledged, pledged / goal AS goal_mult, DATEDIFF( deadline, launched) AS campaign_duration from campaign WHERE currency_id = 2 and outcome = "successful";
+
+#Successful multiplier
+#SELECT id, name, goal, pledged, pledged / goal AS goal_mult, DATEDIFF( deadline, launched) AS campaign_duration from campaign WHERE currency_id = 2 and outcome = "successful" HAVING goal_mult > 3;
+
+#average days
+#SELECT outcome, round(avg(goal), 2) AS average_goal, round(avg(pledged),2) AS average_pledged, round(avg(pledged / goal), 2) AS avg_goal_mult, AVG(DATEDIFF( deadline, launched)) AS avg_campaign_duration from campaign WHERE currency_id = 2 GROUP BY outcome;
+
+#by subcategory
+#SELECT sub_category.name, round(avg(goal), 2) AS average_goal, round(avg(pledged),2) AS average_pledged, round(avg(pledged / goal), 2) AS avg_goal_mult, AVG(DATEDIFF( deadline, launched)) AS avg_campaign_duration from campaign LEFT JOIN sub_category ON campaign.sub_category_id = sub_category.id WHERE currency_id = 2 GROUP BY sub_category.id ORDER BY average_pledged DESC LIMIT 3;
+
+# categories
+#SELECT sub_category.name, round(sum(pledged),2) from campaign LEFT JOIN sub_category ON campaign.sub_category_id = sub_category.id LEFT JOIN category ON sub_category_id = category.id GROUP BY category_id ORDER BY sum(pledged) DESC;
+
+#considering a game board
+#SELECT campaign.name, DATEDIFF( deadline, launched) AS campaign_duration, pledged / goal AS goal_mult,  pledged, goal FROM campaign LEFT JOIN sub_category ON campaign.sub_category_id = sub_category.id WHERE sub_category.name = "Tabletop Games" and campaign.currency_id = 2 ORDER BY pledged DESC LIMIT 10;
+
+# successful averaged out game boards should aim for
+#SELECT round(avg(DATEDIFF( deadline, launched)), 2) AS avg_campaign_duration, round(avg(pledged / goal), 2) AS avg_goal_mult,  round(avg(pledged), 2) as avg_pledged, round(avg(goal), 2) as avg_goal, round(avg(backers), 2) AS avg_backers, round(avg(pledged/backers), 2) AS avg_backer_pledge FROM campaign LEFT JOIN sub_category ON campaign.sub_category_id = sub_category.id WHERE sub_category.name = "Tabletop Games" AND campaign.outcome = "successful" and campaign.currency_id=2 ORDER BY pledged DESC LIMIT 10;
+
+#average pledged and average goal order by pledged per backer
+#SELECT category.name, round(avg(pledged), 2) AS average_pledged, round(avg(goal),2) AS average_goal FROM campaign LEFT JOIN sub_category ON campaign.sub_category_id = sub_category.id LEFT JOIN category ON sub_category.category_id = category.id WHERE backers > 5 GROUP BY category.id ORDER BY avg(backers) DESC;
+
+#average backers per category
+#SELECT category.name, round(avg(pledged/backers), 2) AS pledged_per_backer, round(avg(pledged), 2) AS average_pledged, round(avg(goal),2) AS average_goal, avg(backers) AS average_backers FROM campaign LEFT JOIN sub_category ON campaign.sub_category_id = sub_category.id LEFT JOIN category ON sub_category.category_id = category.id WHERE backers > 5 GROUP BY category.id ORDER BY avg(backers) DESC;
+
+#average pledged by category
+#SELECT category.name, round(avg(pledged), 2) AS average_pledged FROM campaign LEFT JOIN sub_category ON campaign.sub_category_id = sub_category.id LEFT JOIN category ON sub_category.category_id = category.id WHERE backers > 5 GROUP BY category.id ORDER BY avg(backers) DESC;
+
